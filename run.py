@@ -10,7 +10,7 @@ import net as net_module
 from train import Trainer
 
 from eval import ClassificationEvaluator, AudioInference
-
+print("Howdy")
 
 def _get_transform(config, name):
     tsf_name = config['transforms']['type']
@@ -71,33 +71,33 @@ def train_main(config, resume):
 
     data_config = config['data']
 
-    t_transforms = _get_transform(config, 'train')
-    v_transforms = _get_transform(config, 'val')
+    t_transforms = _get_transform(data_config, 'train')
+    v_transforms = _get_transform(data_config, 'val')
     print(t_transforms)
 
-    data_manager = getattr(data_module, config['data']['type'])(config['data'])
+    data_manager = getattr(data_module, data_config['data']['type'])(data_config['data'])
     classes = data_manager.classes
 
     t_loader = data_manager.get_loader('train', t_transforms)
     v_loader = data_manager.get_loader('val', v_transforms)
 
-    m_name = config['model']['type']
-    model = getattr(net_module, m_name)(classes, config=config)
+    m_name = data_config['model']['type']
+    model = getattr(net_module, m_name)(classes, config=data_config)
     num_classes = len(classes)
 
 
-    loss = getattr(net_module, config['train']['loss'])
-    metrics = getattr(net_module, config['metrics'])(num_classes)
+    loss = getattr(net_module, data_config['train']['loss'])
+    metrics = getattr(net_module, data_config['metrics'])(num_classes)
 
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
 
-    opt_name = config['optimizer']['type']
-    opt_args = config['optimizer']['args']
+    opt_name = data_config['optimizer']['type']
+    opt_args = data_config['optimizer']['args']
     optimizer = getattr(torch.optim, opt_name)(trainable_params, **opt_args)
 
 
-    lr_name = config['lr_scheduler']['type']
-    lr_args = config['lr_scheduler']['args']
+    lr_name = data_config['lr_scheduler']['type']
+    lr_args = data_config['lr_scheduler']['args']
     if lr_name == 'None':
         lr_scheduler = None
     else:
@@ -106,7 +106,7 @@ def train_main(config, resume):
 
     trainer = Trainer(model, loss, metrics, optimizer, 
                       resume=resume,
-                      config=config,
+                      config=data_config,
                       data_loader=t_loader,
                       valid_data_loader=v_loader,
                       lr_scheduler=lr_scheduler,

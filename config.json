@@ -2,7 +2,7 @@
     "name"          :   "Urban Testing",
     "data"          :   {
                             "type"      :   "CSVDataManager",
-                            "path"      :   "/home/kiran/Documents/DATA/UrbanSound8K",
+                            "path"      :   "C:/Users/Conor/Documents/School/Fall2020/ECEN403/Code/UrbanSound8K",
                             "format"    :   "audio",
                             "loader"    :   {
                                                 "shuffle"       : true,

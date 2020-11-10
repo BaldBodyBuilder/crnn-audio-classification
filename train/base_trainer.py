@@ -4,6 +4,7 @@ import json
 import logging
 import datetime
 import torch
+import pylint
 import pandas as pd
 from utils.util import mkdir_p
 from utils.visualization import WriterTensorboardX
@@ -16,9 +17,9 @@ class BaseTrainer:
     def __init__(self, model, loss, metrics, optimizer, resume, config, train_logger=None):
         self.config = config
         self.logger = logging.getLogger(self.__class__.__name__)
-
+        #pylint: disable=E1101
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+        #pylint: enable=E1101
         self.model = model.to(self.device)
 
         self.loss = loss
@@ -158,6 +159,7 @@ class BaseTrainer:
         raise NotImplementedError
 
     def _save_checkpoint(self, epoch, save_best=False):
+        print("Howdy")
         """
         Saving checkpoints
 
